@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const cron = require('node-cron');
 const path = require('path');
 
 const app = express();
@@ -84,8 +83,8 @@ Object.entries(TECH).forEach(([p, c], idx) => {
   techPrices[p] = initHistory(offset => genPrice(c.base, c.variance, idx + offset * 0.1 + 100));
 });
 
-// Cron: update every minute
-cron.schedule('* * * * *', () => {
+// Update prices every 10 seconds
+setInterval(() => {
   const now = new Date().toISOString();
   Object.entries(ROUTES).forEach(([r, c], idx) => {
     trainPrices[r].push({ time: now, price: genPrice(c.base, c.variance, idx) });
@@ -95,7 +94,7 @@ cron.schedule('* * * * *', () => {
     techPrices[p].push({ time: now, price: genPrice(c.base, c.variance, idx + 100) });
     if (techPrices[p].length > 200) techPrices[p].shift();
   });
-});
+}, 10000);
 
 // ─── Routes ──────────────────────────────────────────────
 app.get('/api/routes', (req, res) => {

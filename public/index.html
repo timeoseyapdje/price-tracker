@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>PrixTrack</title>
+  <title>PriceTrack</title>
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600&display=swap"
     rel="stylesheet">
@@ -1201,10 +1201,17 @@
     function patchChart(chart, history) {
       const prices = history.map(d => d.price);
       const labels = history.map(d => new Date(d.time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
-      const isUp = prices[prices.length - 1] >= (prices[0] || prices[prices.length - 1]);
+      const isUp = prices[prices.length - 1] >= prices[0];
+      const lc = isUp ? '#00d4a4' : '#ff4b6e';
       chart.data.labels = labels;
       chart.data.datasets[0].data = prices;
-      chart.data.datasets[0].borderColor = isUp ? '#00d4a4' : '#ff4b6e';
+      chart.data.datasets[0].borderColor = lc;
+      chart.data.datasets[0].backgroundColor = ctx2 => {
+        const g = ctx2.chart.ctx.createLinearGradient(0, 0, 0, ctx2.chart.height);
+        g.addColorStop(0, isUp ? 'rgba(0,212,164,.18)' : 'rgba(255,75,110,.18)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        return g;
+      };
       chart.update('none');
     }
 
@@ -1236,8 +1243,8 @@
       // Auto select first
       if (routes.length) loadRouteChart(routes[0].id);
 
-      // Refresh every 60s (reduced from 30s)
-      setInterval(refresh, 60000);
+      // Refresh every 15s
+      setInterval(refresh, 15000);
     }
 
     function updateTo() {
