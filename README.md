@@ -31,13 +31,14 @@ TOEIC au niveau C1, en visant un score proche de 990/990.
 ## Utilisation
 
 Aucune installation ni backend n'est nécessaire : il s'agit de fichiers
-statiques (`index.html`, `style.css`, `app.js`, `questions.js`).
+statiques situés dans `public/` (`index.html`, `style.css`, `app.js`,
+`questions.js`).
 
-- Ouvrir directement `index.html` dans un navigateur, ou
+- Ouvrir directement `public/index.html` dans un navigateur, ou
 - Servir le dossier avec n'importe quel serveur statique, par exemple :
 
 ```bash
-python3 -m http.server 8080
+cd public && python3 -m http.server 8080
 # puis ouvrir http://localhost:8080
 ```
 

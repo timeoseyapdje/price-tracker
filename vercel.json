@@ -1,5 +1,5 @@
 {
   "installCommand": "echo 'Static site, no install step needed'",
   "buildCommand": "echo 'Static site, no build step needed'",
-  "outputDirectory": "."
+  "outputDirectory": "public"
 }
