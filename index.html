@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOEIC Master — Objectif 990</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>TOEIC Master <span class="tagline">Objectif 990/990</span></h1>
+    <nav class="top-nav">
+      <button id="nav-setup" class="nav-btn active">Nouvelle session</button>
+      <button id="nav-history" class="nav-btn">Historique</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- SETUP SCREEN -->
+    <section id="screen-setup" class="screen">
+      <h2>Configurer ta session</h2>
+
+      <div class="field-group">
+        <label>Durée de la session (chronomètre obligatoire)</label>
+        <div class="radio-row" id="duration-options">
+          <label><input type="radio" name="duration" value="10" /> 10 min</label>
+          <label><input type="radio" name="duration" value="20" checked /> 20 min</label>
+          <label><input type="radio" name="duration" value="30" /> 30 min</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Timer par question (optionnel, entraînement à la vitesse réelle)</label>
+        <div class="radio-row" id="per-question-options">
+          <label><input type="radio" name="perq" value="0" /> Désactivé</label>
+          <label><input type="radio" name="perq" value="45" /> 45 sec</label>
+          <label><input type="radio" name="perq" value="60" checked /> 60 sec</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Parties à réviser</label>
+        <div class="checkbox-row" id="part-options">
+          <label><input type="checkbox" name="part" value="5" checked /> Part 5 (grammaire)</label>
+          <label><input type="checkbox" name="part" value="6" checked /> Part 6 (texte à trous)</label>
+          <label><input type="checkbox" name="part" value="7" checked /> Part 7 (compréhension)</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-header">
+          <label>Catégories</label>
+          <div class="link-actions">
+            <button type="button" id="select-all-categories" class="link-btn">Tout sélectionner</button>
+            <button type="button" id="select-none-categories" class="link-btn">Tout désélectionner</button>
+          </div>
+        </div>
+        <div class="checkbox-grid" id="category-options"></div>
+      </div>
+
+      <div id="weak-shortcut" class="weak-shortcut hidden">
+        <p>D'après ton historique, tu es plus faible sur : <strong id="weak-shortcut-list"></strong></p>
+        <button type="button" id="weak-shortcut-btn" class="secondary-btn">Réviser mes points faibles</button>
+      </div>
+
+      <button id="start-session-btn" class="primary-btn">Démarrer la session</button>
+      <p id="setup-error" class="error-text hidden"></p>
+    </section>
+
+    <!-- QUIZ SCREEN -->
+    <section id="screen-quiz" class="screen hidden">
+      <div class="quiz-topbar">
+        <div class="timer-block">
+          <span class="timer-label">Temps restant</span>
+          <span id="global-timer" class="timer-value">20:00</span>
+        </div>
+        <div class="timer-block" id="perq-timer-block">
+          <span class="timer-label">Question</span>
+          <span id="perq-timer" class="timer-value">60</span>
+        </div>
+        <div class="score-block">
+          <span id="running-score">0 / 0</span>
+        </div>
+      </div>
+      <div class="progress-bar-outer"><div id="global-progress-bar" class="progress-bar-inner"></div></div>
+
+      <div class="question-card">
+        <div class="badges">
+          <span id="part-badge" class="badge badge-part">Part 5</span>
+          <span id="category-badge" class="badge badge-category">Catégorie</span>
+        </div>
+
+        <pre id="passage-box" class="passage-box hidden"></pre>
+
+        <p id="question-prompt" class="question-prompt"></p>
+
+        <div id="choices-list" class="choices-list"></div>
+
+        <div id="feedback-box" class="feedback-box hidden">
+          <p id="feedback-title" class="feedback-title"></p>
+          <p id="feedback-explanation" class="feedback-explanation"></p>
+          <button id="next-question-btn" class="primary-btn">Question suivante</button>
+        </div>
+      </div>
+
+      <button id="end-session-btn" class="danger-link">Terminer la session</button>
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section id="screen-results" class="screen hidden">
+      <h2>Résultats de la session</h2>
+
+      <div class="results-summary">
+        <div class="result-tile">
+          <span class="result-number" id="result-score">0%</span>
+          <span class="result-label">Score</span>
+        </div>
+        <div class="result-tile">
+          <span class="result-number" id="result-fraction">0/0</span>
+          <span class="result-label">Bonnes réponses</span>
+        </div>
+        <div class="result-tile">
+          <span class="result-number" id="result-avg-time">0s</span>
+          <span class="result-label">Temps moyen / question</span>
+        </div>
+      </div>
+
+      <h3>Répartition par catégorie</h3>
+      <div id="category-breakdown" class="category-breakdown"></div>
+
+      <div id="weak-categories-box" class="weak-categories-box hidden">
+        <p>Tu as des difficultés sur : <strong id="weak-categories-list"></strong></p>
+      </div>
+
+      <div class="results-actions">
+        <button id="retry-weak-btn" class="secondary-btn hidden">Réviser mes points faibles</button>
+        <button id="new-session-btn" class="primary-btn">Nouvelle session</button>
+        <button id="view-history-btn" class="link-btn">Voir l'historique</button>
+      </div>
+    </section>
+
+    <!-- HISTORY SCREEN -->
+    <section id="screen-history" class="screen hidden">
+      <h2>Historique des sessions</h2>
+      <div id="history-list" class="history-list"></div>
+      <p id="history-empty" class="hidden">Aucune session enregistrée pour le moment.</p>
+      <div class="results-actions">
+        <button id="clear-history-btn" class="danger-link">Effacer l'historique</button>
+        <button id="back-to-setup-btn" class="primary-btn">Nouvelle session</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
